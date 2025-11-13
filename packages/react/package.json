@@ -1,0 +1,22 @@
+{
+  "name": "@dinnertimes/hooks-react",
+  "version": "0.0.1",
+  "license": "MIT",
+  "author": "dinnertime-dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dinnertimes/hooks.git",
+    "directory": "packages/react"
+  },
+  "scripts": {},
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "react": "^18",
+    "react-dom": "^18",
+    "@types/react": "^18",
+    "@types/react-dom": "^18"
+  },
+  "peerDependencies": {
+    "react": "^18 || ^19"
+  }
+}
