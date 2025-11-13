@@ -1,4 +1,10 @@
-import { useCallback, useMemo, useRef, useSyncExternalStore } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useSyncExternalStore,
+} from "react";
 import { localStorageStore, sessionStorageStore } from "./store";
 
 type UseStorageOptions<T> = {
@@ -22,6 +28,10 @@ export function useStorage<T = string | null>(
       storage === "localStorage" ? localStorageStore : sessionStorageStore,
     [storage]
   );
+
+  useEffect(() => {
+    storageStore.initStorageState(key);
+  }, [key]);
 
   const value = useSyncExternalStore(
     useCallback(storageStore.subscribe(key), [key]),

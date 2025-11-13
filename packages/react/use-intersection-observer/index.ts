@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 
 type IntersectionObserverCallbacks = {
   onIntersect: (entry: IntersectionObserverEntry) => void;
-  onIntersectOnce?: boolean;
+  once?: boolean;
 };
 
 type UseIntersectionObserverOptions = IntersectionObserverInit &
@@ -16,12 +16,12 @@ export function useIntersectionObserver<T extends HTMLElement>(
   // 콜백만 ref로 관리
   const callbacksRef = useRef<IntersectionObserverCallbacks>({
     onIntersect: options.onIntersect,
-    onIntersectOnce: options.onIntersectOnce,
+    once: options.once,
   });
   // 매 렌더링마다 최신 콜백으로 업데이트
   callbacksRef.current = {
     onIntersect: options.onIntersect,
-    onIntersectOnce: options.onIntersectOnce,
+    once: options.once,
   };
 
   useEffect(() => {
@@ -31,7 +31,7 @@ export function useIntersectionObserver<T extends HTMLElement>(
       ([entry]) => {
         if (entry.isIntersecting) {
           callbacksRef.current.onIntersect(entry);
-          if (callbacksRef.current.onIntersectOnce) {
+          if (callbacksRef.current.once) {
             observer.disconnect();
           }
         }
