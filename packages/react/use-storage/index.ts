@@ -26,7 +26,7 @@ export function useStorage<T = string | null>(
 
   useEffect(() => {
     storageStore.initStorageState(key);
-  }, [key]);
+  }, [key, storageStore]);
 
   // useMemo로 함수 생성을 메모이제이션
   const subscribe = useMemo(
