@@ -18,6 +18,7 @@ export function useStorage<T = string | null>(
     transformRef.current = transform;
   }
 
+  // INFO: If you use react-compiler, you need to delete useMemo
   const storageStore = useMemo(
     () =>
       storage === "localStorage" ? localStorageStore : sessionStorageStore,
@@ -28,15 +29,17 @@ export function useStorage<T = string | null>(
     storageStore.initStorageState(key);
   }, [key, storageStore]);
 
-  // useMemo로 함수 생성을 메모이제이션
+  // INFO: If you use react-compiler, you need to delete useMemo
   const subscribe = useMemo(
     () => storageStore.subscribe(key),
     [key, storageStore]
   );
+  // INFO: If you use react-compiler, you need to delete useMemo
   const getSnapshot = useMemo(
     () => storageStore.getSnapShot(key),
     [key, storageStore]
   );
+  // INFO: If you use react-compiler, you need to delete useMemo
   const getServerSnapshot = useMemo(
     () => storageStore.getServerSnapShot(key),
     [key, storageStore]
@@ -44,8 +47,9 @@ export function useStorage<T = string | null>(
 
   const value = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
-  // useMemo로 함수 생성을 메모이제이션
+  // INFO: If you use react-compiler, you need to delete useMemo
   const setItem = useMemo(() => storageStore.setItem(key), [key, storageStore]);
+  // INFO: If you use react-compiler, you need to delete useMemo
   const deleteItem = useMemo(
     () => storageStore.deleteItem(key),
     [key, storageStore]

@@ -6,12 +6,14 @@ export function useBrowserCookie(name: string) {
     browserCookieStore.initCookieState(name);
   }, [name]);
 
-  // useMemo로 함수 생성을 메모이제이션
+  // INFO: If you use react-compiler, you need to delete useMemo
   const subscribe = useMemo(() => browserCookieStore.subscribe(name), [name]);
+  // INFO: If you use react-compiler, you need to delete useMemo
   const getSnapshot = useMemo(
     () => browserCookieStore.getSnapShot(name),
     [name]
   );
+  // INFO: If you use react-compiler, you need to delete useMemo
   const getServerSnapshot = useMemo(
     () => browserCookieStore.getServerSnapShot(name),
     [name]
@@ -19,8 +21,9 @@ export function useBrowserCookie(name: string) {
 
   const value = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
-  // useMemo로 함수 생성을 메모이제이션
+  // INFO: If you use react-compiler, you need to delete useMemo
   const setCookie = useMemo(() => browserCookieStore.setCookie(name), [name]);
+  // INFO: If you use react-compiler, you need to delete useMemo
   const deleteCookie = useMemo(
     () => browserCookieStore.deleteCookie(name),
     [name]
