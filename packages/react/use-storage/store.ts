@@ -8,9 +8,12 @@ class StorageStore {
       return;
     }
 
+    // storage 이벤트는 같은 탭 내에서의 변경은 감지하지 못함
+    // => setItem, deleteItem 메서드 호출 시에는 storage 이벤트가 발생하지 않음
     window.addEventListener("storage", (event: StorageEvent) => {
       if (!event.key) return;
       this.storageStates.set(event.key, event.newValue);
+      this.emitChange(event.key);
     });
   }
 
@@ -51,6 +54,7 @@ class StorageStore {
   setItem(key: string) {
     return (value: string) => {
       this.storage.setItem(key, value);
+      this.storageStates.set(key, value); // 추가
       this.emitChange(key);
     };
   }
@@ -58,6 +62,7 @@ class StorageStore {
   deleteItem(key: string) {
     return () => {
       this.storage.removeItem(key);
+      this.storageStates.delete(key); // 추가
       this.emitChange(key);
     };
   }
