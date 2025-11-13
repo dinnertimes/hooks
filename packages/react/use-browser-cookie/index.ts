@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useSyncExternalStore } from "react";
+import { useEffect, useMemo, useSyncExternalStore } from "react";
 import { browserCookieStore } from "./store";
 
 export function useBrowserCookie(name: string) {
@@ -6,16 +6,25 @@ export function useBrowserCookie(name: string) {
     browserCookieStore.initCookieState(name);
   }, [name]);
 
-  const value = useSyncExternalStore(
-    useCallback(browserCookieStore.subscribe(name), [name]),
-    useCallback(browserCookieStore.getSnapShot(name), [name]),
-    useCallback(browserCookieStore.getServerSnapShot(name), [name])
+  // useMemo로 함수 생성을 메모이제이션
+  const subscribe = useMemo(() => browserCookieStore.subscribe(name), [name]);
+  const getSnapshot = useMemo(
+    () => browserCookieStore.getSnapShot(name),
+    [name]
+  );
+  const getServerSnapshot = useMemo(
+    () => browserCookieStore.getServerSnapShot(name),
+    [name]
   );
 
-  const setCookie = useCallback(browserCookieStore.setCookie(name), [name]);
-  const deleteCookie = useCallback(browserCookieStore.deleteCookie(name), [
-    name,
-  ]);
+  const value = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+
+  // useMemo로 함수 생성을 메모이제이션
+  const setCookie = useMemo(() => browserCookieStore.setCookie(name), [name]);
+  const deleteCookie = useMemo(
+    () => browserCookieStore.deleteCookie(name),
+    [name]
+  );
 
   return {
     value,

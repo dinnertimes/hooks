@@ -1,10 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useSyncExternalStore,
-} from "react";
+import { useEffect, useMemo, useRef, useSyncExternalStore } from "react";
 import { localStorageStore, sessionStorageStore } from "./store";
 
 type UseStorageOptions<T> = {
@@ -19,6 +13,7 @@ export function useStorage<T = string | null>(
   const transformRef = useRef<NonNullable<typeof transform>>(
     transform ?? ((value: string | null) => value as any)
   );
+
   if (transform) {
     transformRef.current = transform;
   }
@@ -33,14 +28,28 @@ export function useStorage<T = string | null>(
     storageStore.initStorageState(key);
   }, [key]);
 
-  const value = useSyncExternalStore(
-    useCallback(storageStore.subscribe(key), [key]),
-    useCallback(storageStore.getSnapShot(key), [key]),
-    useCallback(storageStore.getServerSnapShot(key), [key])
+  // useMemo로 함수 생성을 메모이제이션
+  const subscribe = useMemo(
+    () => storageStore.subscribe(key),
+    [key, storageStore]
+  );
+  const getSnapshot = useMemo(
+    () => storageStore.getSnapShot(key),
+    [key, storageStore]
+  );
+  const getServerSnapshot = useMemo(
+    () => storageStore.getServerSnapShot(key),
+    [key, storageStore]
   );
 
-  const setItem = useCallback(storageStore.setItem(key), [key]);
-  const deleteItem = useCallback(storageStore.deleteItem(key), [key]);
+  const value = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+
+  // useMemo로 함수 생성을 메모이제이션
+  const setItem = useMemo(() => storageStore.setItem(key), [key, storageStore]);
+  const deleteItem = useMemo(
+    () => storageStore.deleteItem(key),
+    [key, storageStore]
+  );
 
   return { value: transformRef.current(value), setItem, deleteItem };
 }
